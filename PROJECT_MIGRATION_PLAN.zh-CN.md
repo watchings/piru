@@ -6,6 +6,14 @@
 
 ## 1. 评审结论摘要
 
+已确认的产品决策：
+
+- Web 采用“本地 PWA + 加密导出”，暂不加入同步服务。
+- Android 最低 API 24（Android 7），同时支持 Google Play 和无 Google 服务发行渠道。
+- Web 支持至少两年前版本的 Chrome；继续完全无遥测。
+- 允许引入共享核心；首版仍要求现有能力全部具备，包括 Health Connect、条码、通知、库存、耐受、洞察和 PDF。
+- 接受浏览器可能清除本地数据，并在产品中明确手动备份责任。
+
 建议采用：
 
 1. **共享领域契约 + 平台原生 UI**：将纯领域模型、计算引擎、数据格式和测试契约抽出为跨平台核心；Web 使用 TypeScript/React，Android 使用 Kotlin/Jetpack Compose。

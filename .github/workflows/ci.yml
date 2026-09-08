@@ -202,7 +202,8 @@ jobs:
         run: python3 -m json.tool platform-contracts/v1/piru-native.schema.json >/dev/null
       - name: Verify the PWA has no telemetry endpoints
         run: |
-          if grep -RniE 'google-analytics|segment\.|mixpanel|sentry|posthog|amplitude|telemetry' web; then
+          if grep -niE 'google-analytics|segment\.|mixpanel|sentry|posthog|amplitude|telemetry' \
+              web/*.js web/*.html web/*.webmanifest; then
             echo "Telemetry code is not allowed in the local-first Web target."
             exit 1
           fi

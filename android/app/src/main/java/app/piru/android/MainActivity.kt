@@ -1,6 +1,7 @@
 package app.piru.android
 
 import android.os.Bundle
+import android.Manifest
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import androidx.activity.ComponentActivity
@@ -25,6 +26,9 @@ class MainActivity : ComponentActivity() {
             val channel = NotificationChannel(
                 "piru-reminders", "Piru reminders", NotificationManager.IMPORTANCE_DEFAULT)
             getSystemService(NotificationManager::class.java).createNotificationChannel(channel)
+        }
+        if (android.os.Build.VERSION.SDK_INT >= 33) {
+            requestPermissions(arrayOf(Manifest.permission.POST_NOTIFICATIONS), 1001)
         }
         setContent {
             MaterialTheme {
@@ -70,6 +74,9 @@ class MainActivity : ComponentActivity() {
                                 }) {
                                     Text("Delete")
                                 }
+                                val summary = UsageInsights.summarize(entries.value)
+                                Text("Last ${summary.windowDays} days: ${summary.doseCount} doses, " +
+                                    "${summary.substanceCount} substances, ${summary.totalAmount} total amount")
                             }
                         }
                     }

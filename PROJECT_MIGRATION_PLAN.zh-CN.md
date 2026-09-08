@@ -241,7 +241,8 @@
 
 - [/] Android 已建立 API 24 兼容的通知 channel、Android 13+ 通知权限请求、Room 数据层、Health Connect 可选适配边界和平台能力探测；Health Connect 实际授权、条码扫描、分享、文件系统待完成。
 - [/] Web/Android 已加入本地、无遥测的 30 天 Journal 基础洞察；完整 UsageAnalytics 待完成。
-- [/] Web PWA 已有安装/离线 shell、加密文件导入导出、通知权限、打印/PDF 降级和条码能力探测；后台提醒、相机扫描和多标签页待完成。
+- [/] Web PWA 已有安装/离线 shell、加密文件导入导出、通知权限、打印/PDF 降级和 BarcodeDetector 相机扫描；后台提醒和多标签页待完成。
+- [/] Android 已有 API 24 AlarmManager 提醒调度边界；需补充设置入口、精确闹钟授权和完整提醒恢复测试。
 - [ ] iOS/macOS 现有 HealthKit、Watch、Widget、Live Activity 做回归。
 - [ ] 为不支持的功能提供清晰的降级说明，而不是伪造“已同步/已测量”状态。
 

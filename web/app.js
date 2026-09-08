@@ -97,7 +97,31 @@ document.querySelector("#import").addEventListener("change", event => {
       status.textContent = "Barcode scanning is unavailable; enter the barcode manually.";
       return;
     }
-    status.textContent = "Barcode camera scanning requires a camera-enabled browser.";
+    if (!navigator.mediaDevices?.getUserMedia) {
+      status.textContent = "Camera access is unavailable; enter the barcode manually.";
+      return;
+    }
+    const preview = document.querySelector("#barcode-preview");
+    const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+    preview.srcObject = stream;
+    preview.hidden = false;
+    const detector = new BarcodeDetector();
+    const scan = async () => {
+      try {
+        const codes = await detector.detect(preview);
+        if (codes[0]?.rawValue) {
+          document.querySelector("#barcode").value = codes[0].rawValue;
+          status.textContent = `Barcode detected: ${codes[0].rawValue}`;
+          stream.getTracks().forEach(track => track.stop());
+          preview.hidden = true;
+          return;
+        }
+      } catch {
+        status.textContent = "Barcode scanning failed; enter the barcode manually.";
+      }
+      window.requestAnimationFrame(scan);
+    };
+    scan();
   });
   event.target.value = "";
 });

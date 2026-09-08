@@ -8,6 +8,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.ui.unit.dp
@@ -52,8 +53,18 @@ class MainActivity : ComponentActivity() {
                     entries.value.take(20).forEach { dose ->
                         val elapsed = ((System.currentTimeMillis() - dose.timestamp) / 60000.0).coerceAtLeast(0.0)
                         val remaining = (PkModel.remainingFraction(elapsed, 300.0) * 100).toInt()
-                        Text("${dose.substance} — ${dose.amount} ${dose.unit} (${dose.route}), " +
-                            "estimated $remaining% remaining")
+                        Column {
+                            Text("${dose.substance} — ${dose.amount} ${dose.unit} (${dose.route}), " +
+                                "estimated $remaining% remaining")
+                            Row {
+                                Button(onClick = {
+                                    database.deleteDose(dose.id)
+                                    entries.value = database.listDoses()
+                                }) {
+                                    Text("Delete")
+                                }
+                            }
+                        }
                     }
                 }
             }

@@ -58,4 +58,19 @@ class JournalDatabase(context: Context) :
         }
         return result
     }
+
+    fun updateDose(id: String, amount: Double, notes: String?) {
+        require(amount >= 0) { "Dose amount must be non-negative" }
+        val values = ContentValues().apply {
+            put("amount", amount)
+            put("notes", notes)
+        }
+        check(writableDatabase.update("doses", values, "id = ?", arrayOf(id)) == 1) {
+            "Dose not found"
+        }
+    }
+
+    fun deleteDose(id: String) {
+        writableDatabase.delete("doses", "id = ?", arrayOf(id))
+    }
 }

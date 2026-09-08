@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.1.0",
   "scripts": {
-    "check": "node --check app.js && node --check insights.js"
+    "check": "node --check app.js && node --check catalog.js && node --check insights.js && node --check journal.js && node --check journal-store.js && node --check pk.js"
   },
   "engines": {
     "node": ">=20"

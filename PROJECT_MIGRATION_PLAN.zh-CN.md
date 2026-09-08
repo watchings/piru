@@ -244,7 +244,7 @@
 - [/] Web PWA 已有安装/离线 shell、加密文件导入导出、通知权限、打印/PDF 降级和 BarcodeDetector 相机扫描；后台提醒和多标签页待完成。
 - [/] Android 已有 API 24 AlarmManager 提醒调度边界；需补充设置入口、精确闹钟授权和完整提醒恢复测试。
 - [ ] iOS/macOS 现有 HealthKit、Watch、Widget、Live Activity 做回归。
-- [ ] 为不支持的功能提供清晰的降级说明，而不是伪造“已同步/已测量”状态。
+- [/] 已为 Web 条码/通知/PDF 和 Android Health Connect/通知能力提供不支持时的明确边界；完整权限状态、分享/文件系统和恢复测试待完成。
 
 ### 阶段 7：可选同步与发布
 

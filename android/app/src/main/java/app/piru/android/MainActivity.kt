@@ -18,6 +18,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.room.Room
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,11 +35,21 @@ class MainActivity : ComponentActivity() {
         }
         setContent {
             MaterialTheme {
-                val database = remember { JournalDatabase(this) }
-                val entries = remember { mutableStateOf(database.listDoses()) }
+                val database = remember {
+                    Room.databaseBuilder(
+                        applicationContext,
+                        PiruRoomDatabase::class.java,
+                        "piru-room.db"
+                    ).addMigrations(ROOM_MIGRATION_1_2).build()
+                }
+                val entries = remember { mutableStateOf(emptyList<DoseEntry>()) }
                 val substance = remember { mutableStateOf("") }
                 val amount = remember { mutableStateOf("") }
-                LaunchedEffect(Unit) { entries.value = database.listDoses() }
+                val scope = rememberCoroutineScope()
+                suspend fun refresh() {
+                    entries.value = database.journal().list().map(RoomDoseEntry::toDoseEntry)
+                }
+                LaunchedEffect(Unit) { refresh() }
                 Column {
                     Text("Piru — local-first journal")
                     OutlinedTextField(
@@ -52,10 +65,22 @@ class MainActivity : ComponentActivity() {
                     Button(onClick = {
                         val parsed = amount.value.toDoubleOrNull()
                         if (substance.value.isNotBlank() && parsed != null && parsed >= 0) {
-                            database.addDose(substance.value, parsed, "mg", "oral", null)
-                            entries.value = database.listDoses()
-                            substance.value = ""
-                            amount.value = ""
+                            scope.launch {
+                                database.journal().save(
+                                    RoomDoseEntry(
+                                        id = java.util.UUID.randomUUID().toString(),
+                                        substance = substance.value,
+                                        amount = parsed,
+                                        unit = "mg",
+                                        route = "oral",
+                                        timestamp = System.currentTimeMillis(),
+                                        notes = null
+                                    )
+                                )
+                                refresh()
+                                substance.value = ""
+                                amount.value = ""
+                            }
                         }
                     }) {
                         Text("Save dose")
@@ -69,19 +94,25 @@ class MainActivity : ComponentActivity() {
                                 "estimated $remaining% remaining")
                             Row {
                                 Button(onClick = {
-                                    database.deleteDose(dose.id)
-                                    entries.value = database.listDoses()
+                                    scope.launch {
+                                        database.journal().delete(dose.id)
+                                        refresh()
+                                    }
                                 }) {
                                     Text("Delete")
                                 }
-                                val summary = UsageInsights.summarize(entries.value)
-                                Text("Last ${summary.windowDays} days: ${summary.doseCount} doses, " +
-                                    "${summary.substanceCount} substances, ${summary.totalAmount} total amount")
                             }
                         }
                     }
+                    val summary = UsageInsights.summarize(entries.value)
+                    Text("Last ${summary.windowDays} days: ${summary.doseCount} doses, " +
+                        "${summary.substanceCount} substances, ${summary.totalAmount} total amount")
                 }
             }
         }
     }
 }
+
+private fun RoomDoseEntry.toDoseEntry() = DoseEntry(
+    id, substance, amount, unit, route, timestamp, notes
+)

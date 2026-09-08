@@ -1,0 +1,55 @@
+name: Flutter migration
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: flutter-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Dart translation and Flutter builds
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+
+      - name: Test the translator
+        run: python3 -m unittest discover -s tools -p 'test_*.py'
+
+      - name: Generate Dart translation
+        run: python3 tools/swift_to_flutter.py --output flutter/generated
+
+      - name: Upload generated Dart translation
+        uses: actions/upload-artifact@v4
+        with:
+          name: piru-dart-translation
+          path: flutter/generated
+          if-no-files-found: error
+
+      - name: Install Flutter dependencies
+        working-directory: flutter
+        run: flutter pub get
+
+      - name: Analyze Flutter shell
+        working-directory: flutter
+        run: flutter analyze
+
+      - name: Build Flutter web
+        working-directory: flutter
+        run: flutter build web --release
+
+      - name: Build Flutter Android APK
+        working-directory: flutter
+        run: flutter build apk --debug

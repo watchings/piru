@@ -15,6 +15,8 @@
       <p><strong>Your data stays in this browser.</strong> Browsers can clear local
         storage. Export an encrypted backup regularly; Piru has no sync service.</p>
       <button id="export" type="button">Export encrypted backup</button>
+      <button id="notify" type="button">Enable reminders</button>
+      <button id="print" type="button">Print / save journal as PDF</button>
       <label>
         Import encrypted backup
         <input id="import" type="file" accept="application/json">
@@ -39,6 +41,11 @@
         Search the substance library
         <input id="search" type="search" autocomplete="off">
       </label>
+      <label>
+        Barcode value
+        <input id="barcode" inputmode="numeric" autocomplete="off">
+      </label>
+      <button id="scan-barcode" type="button">Scan barcode</button>
       <ul id="results"></ul>
       <output id="status" role="status"></output>
     </main>

@@ -239,8 +239,8 @@
 
 ### 阶段 6：平台集成
 
-- [ ] Android Health Connect、通知、条码扫描、分享和文件系统。
-- [ ] Web PWA 安装、通知、离线更新、文件导入导出和多标签页。
+- [/] Android 已建立 API 24 兼容的通知 channel；Health Connect、条码扫描、分享、文件系统待完成。
+- [/] Web PWA 已有安装/离线 shell、加密文件导入导出、通知权限、打印/PDF 降级和条码能力探测；后台提醒、相机扫描和多标签页待完成。
 - [ ] iOS/macOS 现有 HealthKit、Watch、Widget、Live Activity 做回归。
 - [ ] 为不支持的功能提供清晰的降级说明，而不是伪造“已同步/已测量”状态。
 

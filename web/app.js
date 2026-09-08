@@ -78,6 +78,27 @@ document.querySelector("#import").addEventListener("change", event => {
   importEncryptedBackup(file).catch(() => {
     status.textContent = "Backup import failed. Existing local data was not changed.";
   });
+
+  document.querySelector("#notify").addEventListener("click", async () => {
+    if (!("Notification" in window)) {
+      status.textContent = "Notifications are unavailable in this browser.";
+      return;
+    }
+    const permission = await Notification.requestPermission();
+    status.textContent = permission === "granted"
+      ? "Reminders enabled for this browser."
+      : "Notifications remain disabled.";
+  });
+
+  document.querySelector("#print").addEventListener("click", () => window.print());
+
+  document.querySelector("#scan-barcode").addEventListener("click", async () => {
+    if (!("BarcodeDetector" in window)) {
+      status.textContent = "Barcode scanning is unavailable; enter the barcode manually.";
+      return;
+    }
+    status.textContent = "Barcode camera scanning requires a camera-enabled browser.";
+  });
   event.target.value = "";
 });
 

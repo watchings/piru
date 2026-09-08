@@ -1,6 +1,8 @@
 package app.piru.android
 
 import android.os.Bundle
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material3.MaterialTheme
@@ -19,6 +21,11 @@ import androidx.compose.runtime.remember
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        if (android.os.Build.VERSION.SDK_INT >= 26) {
+            val channel = NotificationChannel(
+                "piru-reminders", "Piru reminders", NotificationManager.IMPORTANCE_DEFAULT)
+            getSystemService(NotificationManager::class.java).createNotificationChannel(channel)
+        }
         setContent {
             MaterialTheme {
                 val database = remember { JournalDatabase(this) }

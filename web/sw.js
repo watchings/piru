@@ -6,6 +6,13 @@ self.addEventListener("install", event => {
 });
 
 self.addEventListener("fetch", event => {
-  event.respondWith(caches.match(event.request).then(cached =>
-    cached || fetch(event.request)));
+  event.respondWith(caches.match(event.request).then(async cached => {
+    if (cached) return cached;
+    const response = await fetch(event.request);
+    if (new URL(event.request.url).pathname.endsWith("/catalog/substances.json")) {
+      const cache = await caches.open(CACHE);
+      await cache.put(event.request, response.clone());
+    }
+    return response;
+  }));
 });

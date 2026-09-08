@@ -1,4 +1,7 @@
+import { loadCatalog, searchCatalog } from "./catalog.js";
+
 const status = document.querySelector("#status");
+const results = document.querySelector("#results");
 
 async function exportEncryptedBackup() {
   const passphrase = window.prompt("Choose a passphrase for this encrypted backup.");
@@ -36,6 +39,27 @@ document.querySelector("#export").addEventListener("click", () => {
     status.textContent = "Backup export failed. Your local data was not changed.";
   });
 });
+
+function renderResults(items) {
+  results.replaceChildren(...items.map(item => {
+    const row = document.createElement("li");
+    row.textContent = `${item.display_name || item.name} — ${item.category || "Uncategorized"}`;
+    return row;
+  }));
+}
+
+document.querySelector("#search").addEventListener("input", event => {
+  renderResults(searchCatalog(event.target.value));
+});
+
+loadCatalog()
+  .then(items => {
+    status.textContent = `${items.length} substances available offline after first load.`;
+    renderResults(items.slice(0, 20));
+  })
+  .catch(() => {
+    status.textContent = "The substance library is unavailable. Check the catalog update.";
+  });
 
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("sw.js");

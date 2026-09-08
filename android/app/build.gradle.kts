@@ -14,7 +14,16 @@ android {
         versionCode = 1
         versionName = "0.1.0"
     }
+
+    sourceSets["main"].assets.srcDir(layout.buildDirectory.dir("generated/catalog"))
 }
+
+val syncCatalog by tasks.registering(Copy::class) {
+    from(rootProject.file("../data/snapshots/substances.json"))
+    into(layout.buildDirectory.dir("generated/catalog/catalog"))
+}
+
+tasks.named("preBuild") { dependsOn(syncCatalog) }
 
 dependencies {
     implementation("androidx.core:core-ktx:1.15.0")

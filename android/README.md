@@ -9,3 +9,8 @@ barcode scanning, notifications, inventory, tolerance, insights, and PDF
 export behind platform interfaces. Those interfaces must consume the
 versioned contracts in `../platform-contracts/`; they must not mirror
 SwiftData implementation details.
+
+The build currently generates `assets/catalog/substances.json` from the
+tracked snapshot at `../data/snapshots/substances.json`. The eventual Android
+reader must move to the published SQLite artifact after the read-only catalog
+API is complete; the snapshot is used here as a deterministic bootstrap.

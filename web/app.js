@@ -1,4 +1,5 @@
 import { loadCatalog, searchCatalog } from "./catalog.js";
+import { listDoses } from "./journal-store.js";
 
 const status = document.querySelector("#status");
 const results = document.querySelector("#results");
@@ -9,11 +10,18 @@ async function exportEncryptedBackup() {
     status.textContent = "Backup cancelled. Your local data was not changed.";
     return;
   }
+  const doses = await listDoses();
   const payload = new TextEncoder().encode(JSON.stringify({
-    format: "piru-native",
-    version: 1,
-    exportedAt: new Date().toISOString(),
-    entries: []
+    piruExportVersion: 1,
+    appVersion: "Piru Web 0.1.0",
+    exportedAt: Date.now(),
+    sessions: [],
+    orphanDoses: doses,
+    dailyDoseItems: [],
+    substanceColors: [],
+    userColors: [],
+    favorites: [],
+    customSubstances: []
   }));
   const salt = crypto.getRandomValues(new Uint8Array(16));
   const material = await crypto.subtle.importKey(

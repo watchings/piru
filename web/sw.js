@@ -1,4 +1,4 @@
-const CACHE = "piru-web-v1";
+const CACHE = "piru-web-v2";
 const ASSETS = ["./", "./index.html", "./app.js", "./manifest.webmanifest"];
 
 self.addEventListener("install", event => {

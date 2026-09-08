@@ -1,5 +1,6 @@
 import { addDose, deleteDose, listDoses, updateDose } from "./journal-store.js";
 import { remainingFraction } from "./pk.js";
+import { summarizeDoses } from "./insights.js";
 
 const form = document.querySelector("#dose-form");
 const doses = document.querySelector("#doses");
@@ -37,7 +38,12 @@ function renderDoses(entries) {
 }
 
 export async function refreshDoses() {
-  renderDoses(await listDoses());
+  const entries = await listDoses();
+  renderDoses(entries);
+  const summary = summarizeDoses(entries);
+  document.querySelector("#insights").textContent =
+    `${summary.doseCount} doses across ${summary.substanceCount} substances in the last ` +
+    `${summary.windowDays} days. Total logged amount: ${summary.totalAmount}.`;
 }
 
 form.addEventListener("submit", async event => {

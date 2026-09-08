@@ -60,3 +60,12 @@ export async function replaceDoses(entries) {
     transaction.onerror = () => reject(transaction.error);
   });
 }
+
+export async function deleteDose(id) {
+  const db = await database();
+  return new Promise((resolve, reject) => {
+    const request = db.transaction(STORE, "readwrite").objectStore(STORE).delete(id);
+    request.onsuccess = resolve;
+    request.onerror = () => reject(request.error);
+  });
+}

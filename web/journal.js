@@ -1,4 +1,4 @@
-import { addDose, listDoses } from "./journal-store.js";
+import { addDose, deleteDose, listDoses } from "./journal-store.js";
 
 const form = document.querySelector("#dose-form");
 const doses = document.querySelector("#doses");
@@ -7,6 +7,14 @@ function renderDoses(entries) {
   doses.replaceChildren(...entries.map(entry => {
     const row = document.createElement("li");
     row.textContent = `${entry.substance} — ${entry.amount} ${entry.unit} (${entry.route})`;
+    const remove = document.createElement("button");
+    remove.type = "button";
+    remove.textContent = "Delete";
+    remove.addEventListener("click", async () => {
+      await deleteDose(entry.id);
+      await refreshDoses();
+    });
+    row.append(" ", remove);
     return row;
   }));
 }

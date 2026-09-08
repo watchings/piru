@@ -1,0 +1,42 @@
+const status = document.querySelector("#status");
+
+async function exportEncryptedBackup() {
+  const passphrase = window.prompt("Choose a passphrase for this encrypted backup.");
+  if (!passphrase) {
+    status.textContent = "Backup cancelled. Your local data was not changed.";
+    return;
+  }
+  const payload = new TextEncoder().encode(JSON.stringify({
+    format: "piru-native",
+    version: 1,
+    exportedAt: new Date().toISOString(),
+    entries: []
+  }));
+  const salt = crypto.getRandomValues(new Uint8Array(16));
+  const material = await crypto.subtle.importKey(
+    "raw", new TextEncoder().encode(passphrase), "PBKDF2", false, ["deriveKey"]);
+  const key = await crypto.subtle.deriveKey(
+    { name: "PBKDF2", salt, iterations: 250000, hash: "SHA-256" },
+    material, { name: "AES-GCM", length: 256 }, false, ["encrypt"]);
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const ciphertext = await crypto.subtle.encrypt({ name: "AES-GCM", iv }, key, payload);
+  const envelope = { version: 1, algorithm: "PBKDF2-SHA-256/AES-256-GCM",
+    salt: [...salt], iv: [...iv], ciphertext: [...new Uint8Array(ciphertext)] };
+  const blob = new Blob([JSON.stringify(envelope)], { type: "application/json" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = "piru-encrypted-backup.json";
+  link.click();
+  URL.revokeObjectURL(link.href);
+  status.textContent = "Backup exported. Store it somewhere private.";
+}
+
+document.querySelector("#export").addEventListener("click", () => {
+  exportEncryptedBackup().catch(() => {
+    status.textContent = "Backup export failed. Your local data was not changed.";
+  });
+});
+
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("sw.js");
+}

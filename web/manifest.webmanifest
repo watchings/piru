@@ -1,0 +1,9 @@
+{
+  "name": "Piru",
+  "short_name": "Piru",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#0d0a10",
+  "theme_color": "#eb4470",
+  "icons": []
+}

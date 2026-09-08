@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://piru.app/contracts/piru-native/v1",
+  "title": "Piru Native export",
+  "type": "object",
+  "required": ["format", "version", "exportedAt", "entries"],
+  "properties": {
+    "format": { "const": "piru-native" },
+    "version": { "const": 1 },
+    "exportedAt": { "type": "string", "format": "date-time" },
+    "entries": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/doseEntry" }
+    }
+  },
+  "$defs": {
+    "doseEntry": {
+      "type": "object",
+      "required": ["id", "substance", "amount", "unit", "takenAt"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "substance": { "type": "string", "minLength": 1 },
+        "amount": { "type": "number" },
+        "unit": { "type": "string", "minLength": 1 },
+        "route": { "type": ["string", "null"] },
+        "takenAt": { "type": "string", "format": "date-time" },
+        "note": { "type": ["string", "null"] }
+      },
+      "additionalProperties": true
+    }
+  }
+}

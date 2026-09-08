@@ -184,3 +184,54 @@ jobs:
           xcodebuild -scheme Piru \
             -destination 'platform=iOS Simulator,name=iPhone 17 Pro' \
             test | tail -40
+
+  web:
+    name: Web PWA (offline shell)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: web/package.json
+      - name: Check Web JavaScript
+        working-directory: web
+        run: npm run check
+      - name: Validate platform contract JSON
+        run: python3 -m json.tool platform-contracts/v1/piru-native.schema.json >/dev/null
+      - name: Verify the PWA has no telemetry endpoints
+        run: |
+          if grep -RniE 'google-analytics|segment\.|mixpanel|sentry|posthog|amplitude|telemetry' web; then
+            echo "Telemetry code is not allowed in the local-first Web target."
+            exit 1
+          fi
+      - name: Package Web PWA
+        run: tar -czf piru-web-pwa.tar.gz -C web .
+      - uses: actions/upload-artifact@v4
+        with:
+          name: piru-web-pwa
+          path: piru-web-pwa.tar.gz
+
+  android:
+    name: Android (API 24+)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 17
+      - uses: android-actions/setup-android@v3
+      - name: Install Android API 35
+        run: sdkmanager "platforms;android-35" "build-tools;35.0.0"
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: 8.10
+      - name: Build Android debug APK
+        working-directory: android
+        run: gradle --no-daemon assembleDebug
+      - uses: actions/upload-artifact@v4
+        with:
+          name: piru-android-debug
+          path: android/app/build/outputs/apk/debug/app-debug.apk

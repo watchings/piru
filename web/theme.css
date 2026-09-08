@@ -1,0 +1,81 @@
+:root {
+  color-scheme: light dark;
+  --piru-accent: oklch(68% 0.19 12);
+  --piru-accent-strong: oklch(62% 0.22 8);
+  --piru-background: oklch(97% 0.01 285);
+  --piru-card: oklch(100% 0 0 / 82%);
+  --piru-input: oklch(94% 0.01 285);
+  --piru-label: oklch(48% 0.02 285);
+  --piru-border: oklch(85% 0.02 285);
+  --piru-radius: 22px;
+  --piru-space: 16px;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --piru-accent: oklch(66% 0.22 8);
+    --piru-background: oklch(0% 0 0);
+    --piru-card: oklch(14% 0.01 285);
+    --piru-input: oklch(20% 0.01 285);
+    --piru-label: oklch(82% 0.01 285);
+    --piru-border: oklch(28% 0.01 285);
+  }
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  min-width: 320px;
+  color: var(--piru-label);
+  background: var(--piru-background);
+}
+main {
+  width: min(100% - 32px, 720px);
+  margin: 0 auto;
+  padding: 32px 0 48px;
+}
+h1, h2 { color: var(--piru-label); letter-spacing: -0.02em; }
+h1 { font-size: 34px; margin: 0 0 8px; }
+h2 { font-size: 22px; margin: 28px 0 12px; }
+main > p, main > form, main > ul, main > label, main > output,
+main > video, main > button {
+  display: block;
+  width: 100%;
+}
+form, #doses, #insights, #results, #status {
+  padding: var(--space, var(--piru-space));
+  border: 1px solid var(--piru-border);
+  border-radius: var(--piru-radius);
+  background: var(--piru-card);
+  backdrop-filter: blur(20px);
+}
+form { display: grid; gap: 12px; }
+input, select, button {
+  min-height: 46px;
+  border: 1px solid var(--piru-border);
+  border-radius: 14px;
+  padding: 0 14px;
+  font: inherit;
+  color: inherit;
+  background: var(--piru-input);
+}
+button {
+  margin: 6px 0;
+  border-color: transparent;
+  color: white;
+  background: var(--piru-accent);
+  font-weight: 650;
+  cursor: pointer;
+}
+button:hover { background: var(--piru-accent-strong); }
+button:focus-visible, input:focus-visible, select:focus-visible {
+  outline: 3px solid color-mix(in oklab, var(--piru-accent) 45%, transparent);
+  outline-offset: 2px;
+}
+li { margin: 8px 0; }
+#barcode-preview { border-radius: var(--piru-radius); }
+@media print {
+  button, input, select, video, form, #search, #barcode, #scan-barcode { display: none; }
+  main { width: 100%; padding: 0; }
+}

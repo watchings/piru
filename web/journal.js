@@ -1,4 +1,4 @@
-import { addDose, deleteDose, listDoses } from "./journal-store.js";
+import { addDose, deleteDose, listDoses, updateDose } from "./journal-store.js";
 import { remainingFraction } from "./pk.js";
 
 const form = document.querySelector("#dose-form");
@@ -18,7 +18,20 @@ function renderDoses(entries) {
       await deleteDose(entry.id);
       await refreshDoses();
     });
-    row.append(" ", remove);
+    const edit = document.createElement("button");
+    edit.type = "button";
+    edit.textContent = "Edit";
+    edit.addEventListener("click", async () => {
+      const amount = window.prompt("Amount", String(entry.amount));
+      if (amount === null) return;
+      const parsed = Number(amount);
+      if (!Number.isFinite(parsed) || parsed < 0) return;
+      const notes = window.prompt("Note (optional)", entry.notes || "");
+      if (notes === null) return;
+      await updateDose(entry.id, { amount: parsed, notes });
+      await refreshDoses();
+    });
+    row.append(" ", edit, " ", remove);
     return row;
   }));
 }

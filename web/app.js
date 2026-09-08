@@ -70,15 +70,15 @@ document.querySelector("#export").addEventListener("click", () => {
   exportEncryptedBackup().catch(() => {
     status.textContent = "Backup export failed. Your local data was not changed.";
   });
+});
 
-  document.querySelector("#import").addEventListener("change", event => {
-    const [file] = event.target.files;
-    if (!file) return;
-    importEncryptedBackup(file).catch(() => {
-      status.textContent = "Backup import failed. Existing local data was not changed.";
-    });
-    event.target.value = "";
+document.querySelector("#import").addEventListener("change", event => {
+  const [file] = event.target.files;
+  if (!file) return;
+  importEncryptedBackup(file).catch(() => {
+    status.textContent = "Backup import failed. Existing local data was not changed.";
   });
+  event.target.value = "";
 });
 
 function renderResults(items) {

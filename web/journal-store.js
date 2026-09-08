@@ -43,6 +43,24 @@ export async function addDose({ substance, amount, unit, route, notes = "" }) {
   });
 }
 
+export async function updateDose(id, changes) {
+  const db = await database();
+  return new Promise((resolve, reject) => {
+    const transaction = db.transaction(STORE, "readwrite");
+    const store = transaction.objectStore(STORE);
+    const request = store.get(id);
+    request.onsuccess = () => {
+      if (!request.result) {
+        reject(new Error("Dose not found"));
+        return;
+      }
+      store.put({ ...request.result, ...changes, id });
+    };
+    transaction.oncomplete = resolve;
+    transaction.onerror = () => reject(transaction.error);
+  });
+}
+
 export async function replaceDoses(entries) {
   if (!Array.isArray(entries) || entries.some(entry =>
     !entry.id || !entry.substance || !Number.isFinite(entry.amount) ||

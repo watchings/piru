@@ -158,6 +158,8 @@ jobs:
         run: python3 pipeline/build/tests/test_catalog_snapshot.py
       - name: Cross-platform PK fixture
         run: python3 pipeline/build/tests/test_pk_fixture.py
+      - name: Cross-platform Journal UI parity
+        run: python3 pipeline/build/tests/test_ui_parity.py
 
   swift-lint:
     name: Swift (format + lint)

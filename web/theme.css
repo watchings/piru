@@ -35,6 +35,26 @@ main {
   margin: 0 auto;
   padding: 32px 0 48px;
 }
+.tab-bar {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
+  padding: 4px;
+  border-radius: 16px;
+  background: var(--piru-input);
+}
+.tab-bar__item {
+  min-height: 44px;
+  margin: 0;
+  border-radius: 12px;
+  color: var(--piru-label);
+  background: transparent;
+  font-size: 0.85rem;
+}
+.tab-bar__item--selected {
+  color: white;
+  background: var(--piru-accent);
+}
 h1, h2 { color: var(--piru-label); letter-spacing: -0.02em; }
 h1 { font-size: 34px; margin: 0 0 8px; }
 h2 { font-size: 22px; margin: 28px 0 12px; }
@@ -76,6 +96,6 @@ button:focus-visible, input:focus-visible, select:focus-visible {
 li { margin: 8px 0; }
 #barcode-preview { border-radius: var(--piru-radius); }
 @media print {
-  button, input, select, video, form, #search, #barcode, #scan-barcode { display: none; }
+  button, input, select, video, form, #search, #barcode, #scan-barcode, .tab-bar { display: none; }
   main { width: 100%; padding: 0; }
 }

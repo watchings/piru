@@ -10,6 +10,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -57,6 +59,16 @@ class MainActivity : ComponentActivity() {
                 Column(
                     modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp, vertical = 32.dp)
                 ) {
+                    NavigationBar {
+                        listOf("Journal", "Library", "Tools", "Insights").forEachIndexed { index, label ->
+                            NavigationBarItem(
+                                selected = index == 0,
+                                onClick = { },
+                                icon = { Text(label.take(1)) },
+                                label = { Text(label) }
+                            )
+                        }
+                    }
                     Text("Piru", style = MaterialTheme.typography.headlineMedium)
                     Text("A private, local-first dose journal")
                     Card(modifier = Modifier.padding(top = 20.dp)) {

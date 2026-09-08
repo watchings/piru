@@ -244,6 +244,7 @@
 - [/] Web PWA 已有安装/离线 shell、加密文件导入导出、通知权限、打印/PDF 降级和 BarcodeDetector 相机扫描；后台提醒和多标签页待完成。
 - [/] Web/Android 已建立与 iOS Theme 的 accent、背景、卡片、输入面、圆角、间距和深色模式视觉 token；逐屏 1:1 信息架构与截图回归仍待完成。
 - [/] 新增 `pipeline/ui_translate.py`，可遍历全部 `Piru/Views` 并为 Web/Android 生成可审阅的 UI 翻译桩和 manifest；桩代码必须逐屏人工修正、补齐行为并通过截图回归后才算完成。
+- [/] Journal 首屏已从翻译桩替换为 Web/Android 生产 UI，包含四 Tab 主导航、剂量输入卡片、最近记录和基础洞察；已加入静态 parity 检查，截图回归与其余屏幕仍待完成。
 - [/] Android 已有 API 24 AlarmManager 提醒调度边界；需补充设置入口、精确闹钟授权和完整提醒恢复测试。
 - [ ] iOS/macOS 现有 HealthKit、Watch、Widget、Live Activity 做回归。
 - [/] 已为 Web 条码/通知/PDF 和 Android Health Connect/通知能力提供不支持时的明确边界；完整权限状态、分享/文件系统和恢复测试待完成。

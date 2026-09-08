@@ -1,30 +1,165 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://piru.app/contracts/piru-native/v1",
-  "title": "Piru Native export",
+  "title": "Piru Native v1 export",
   "type": "object",
-  "required": ["format", "version", "exportedAt", "entries"],
+  "required": [
+    "piruExportVersion",
+    "appVersion",
+    "exportedAt",
+    "sessions",
+    "orphanDoses",
+    "dailyDoseItems",
+    "substanceColors",
+    "userColors",
+    "favorites",
+    "customSubstances"
+  ],
   "properties": {
-    "format": { "const": "piru-native" },
-    "version": { "const": 1 },
-    "exportedAt": { "type": "string", "format": "date-time" },
-    "entries": {
-      "type": "array",
-      "items": { "$ref": "#/$defs/doseEntry" }
-    }
+    "piruExportVersion": { "const": 1 },
+    "appVersion": { "type": "string", "minLength": 1 },
+    "exportedAt": { "$ref": "#/$defs/epochMilliseconds" },
+    "sessions": { "type": "array", "items": { "$ref": "#/$defs/session" } },
+    "orphanDoses": { "type": "array", "items": { "$ref": "#/$defs/dose" } },
+    "dailyDoseItems": { "type": "array", "items": { "$ref": "#/$defs/dailyDose" } },
+    "substanceColors": { "type": "array", "items": { "$ref": "#/$defs/substanceColor" } },
+    "userColors": { "type": "array", "items": { "$ref": "#/$defs/userColor" } },
+    "favorites": { "type": "array", "items": { "$ref": "#/$defs/favorite" } },
+    "customSubstances": { "type": "array" },
+    "inventory": { "type": "array", "items": { "$ref": "#/$defs/inventory" } }
   },
+  "additionalProperties": true,
   "$defs": {
-    "doseEntry": {
+    "uuid": { "type": "string", "format": "uuid" },
+    "epochMilliseconds": { "type": "integer", "minimum": 0 },
+    "nullableString": { "type": ["string", "null"] },
+    "dose": {
       "type": "object",
-      "required": ["id", "substance", "amount", "unit", "takenAt"],
+      "required": ["substance", "amount", "unit", "route", "timestamp", "tags", "isBackgroundMed"],
       "properties": {
-        "id": { "type": "string", "minLength": 1 },
+        "id": { "anyOf": [{ "$ref": "#/$defs/uuid" }, { "type": "null" }] },
         "substance": { "type": "string", "minLength": 1 },
-        "amount": { "type": "number" },
+        "amount": { "type": "number", "minimum": 0 },
         "unit": { "type": "string", "minLength": 1 },
-        "route": { "type": ["string", "null"] },
-        "takenAt": { "type": "string", "format": "date-time" },
-        "note": { "type": ["string", "null"] }
+        "route": { "type": "string", "minLength": 1 },
+        "saltForm": { "$ref": "#/$defs/nullableString" },
+        "substanceUID": { "$ref": "#/$defs/nullableString" },
+        "isomer": { "$ref": "#/$defs/nullableString" },
+        "releaseForm": { "$ref": "#/$defs/nullableString" },
+        "productName": { "$ref": "#/$defs/nullableString" },
+        "displayNameSnapshot": { "$ref": "#/$defs/nullableString" },
+        "timestamp": { "$ref": "#/$defs/epochMilliseconds" },
+        "notes": { "$ref": "#/$defs/nullableString" },
+        "tags": { "type": "array", "items": { "type": "string" } },
+        "isBackgroundMed": { "type": "boolean" },
+        "locationName": { "$ref": "#/$defs/nullableString" },
+        "latitude": { "type": ["number", "null"], "minimum": -90, "maximum": 90 },
+        "longitude": { "type": ["number", "null"], "minimum": -180, "maximum": 180 }
+      },
+      "additionalProperties": true
+    },
+    "session": {
+      "type": "object",
+      "required": ["id", "startDate", "doses"],
+      "properties": {
+        "id": { "$ref": "#/$defs/uuid" },
+        "startDate": { "$ref": "#/$defs/epochMilliseconds" },
+        "title": { "$ref": "#/$defs/nullableString" },
+        "note": { "$ref": "#/$defs/nullableString" },
+        "doses": { "type": "array", "items": { "$ref": "#/$defs/dose" } },
+        "notes": { "type": ["array", "null"], "items": { "$ref": "#/$defs/sessionNote" } },
+        "checkInIntervalMinutes": { "type": ["number", "null"], "minimum": 0 }
+      },
+      "additionalProperties": true
+    },
+    "sessionNote": {
+      "type": "object",
+      "required": ["id", "timestamp", "text", "descriptors", "kind"],
+      "properties": {
+        "id": { "$ref": "#/$defs/uuid" },
+        "timestamp": { "$ref": "#/$defs/epochMilliseconds" },
+        "text": { "type": "string" },
+        "shulgin": { "type": ["integer", "null"], "minimum": 0, "maximum": 4 },
+        "mood": { "type": ["integer", "null"], "minimum": -3, "maximum": 3 },
+        "energy": { "type": ["integer", "null"], "minimum": -3, "maximum": 3 },
+        "descriptors": { "type": "array", "items": { "type": "string" } },
+        "heartRate": { "type": ["number", "null"], "minimum": 0 },
+        "kind": { "type": "string", "minLength": 1 }
+      },
+      "additionalProperties": true
+    },
+    "dailyDose": {
+      "type": "object",
+      "required": ["substance", "amount", "unit", "route", "sortOrder", "category",
+        "isBackgroundMed", "frequencyRaw", "frequencyDays", "startDate"],
+      "properties": {
+        "substance": { "type": "string", "minLength": 1 },
+        "amount": { "type": "number", "minimum": 0 },
+        "unit": { "type": "string", "minLength": 1 },
+        "route": { "type": "string", "minLength": 1 },
+        "sortOrder": { "type": "integer" },
+        "category": { "type": "string" },
+        "isBackgroundMed": { "type": "boolean" },
+        "frequencyRaw": { "type": "string" },
+        "frequencyDays": { "type": "array", "items": { "type": "integer", "minimum": 1, "maximum": 7 } },
+        "startDate": { "$ref": "#/$defs/epochMilliseconds" }
+      },
+      "additionalProperties": true
+    },
+    "substanceColor": {
+      "type": "object",
+      "required": ["substance", "hexColor"],
+      "properties": {
+        "substance": { "type": "string", "minLength": 1 },
+        "hexColor": { "type": "string", "pattern": "^[0-9A-Fa-f]{6,8}$" }
+      },
+      "additionalProperties": true
+    },
+    "userColor": {
+      "type": "object",
+      "required": ["hex", "name", "createdAt"],
+      "properties": {
+        "hex": { "type": "string", "pattern": "^[0-9A-Fa-f]{6,8}$" },
+        "name": { "type": "string" },
+        "createdAt": { "$ref": "#/$defs/epochMilliseconds" }
+      },
+      "additionalProperties": true
+    },
+    "favorite": {
+      "type": "object",
+      "required": ["substance", "createdAt"],
+      "properties": {
+        "substance": { "type": "string", "minLength": 1 },
+        "createdAt": { "$ref": "#/$defs/epochMilliseconds" }
+      },
+      "additionalProperties": true
+    },
+    "inventory": {
+      "type": "object",
+      "required": ["substance", "unit", "trackingStart", "createdAt", "manualEvents"],
+      "properties": {
+        "substance": { "type": "string", "minLength": 1 },
+        "saltForm": { "$ref": "#/$defs/nullableString" },
+        "unit": { "type": "string", "minLength": 1 },
+        "trackingStart": { "$ref": "#/$defs/epochMilliseconds" },
+        "lowStockThreshold": { "type": ["number", "null"], "minimum": 0 },
+        "baselineQuantity": { "type": ["number", "null"], "minimum": 0 },
+        "doseSize": { "type": ["number", "null"], "minimum": 0 },
+        "createdAt": { "$ref": "#/$defs/epochMilliseconds" },
+        "manualEvents": { "type": "array", "items": { "$ref": "#/$defs/manualEvent" } }
+      },
+      "additionalProperties": true
+    },
+    "manualEvent": {
+      "type": "object",
+      "required": ["id", "kind", "amount", "date", "setsBaseline"],
+      "properties": {
+        "id": { "$ref": "#/$defs/uuid" },
+        "kind": { "type": "string", "minLength": 1 },
+        "amount": { "type": "number" },
+        "date": { "$ref": "#/$defs/epochMilliseconds" },
+        "note": { "$ref": "#/$defs/nullableString" },
+        "setsBaseline": { "type": "boolean" }
       },
       "additionalProperties": true
     }

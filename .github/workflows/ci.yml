@@ -152,6 +152,8 @@ jobs:
         run: python3 pipeline/build/tests/test_medtap_pk.py
       - name: PSID assignment and stability
         run: python3 pipeline/build/tests/test_psid.py
+      - name: Cross-platform Piru Native contract
+        run: python3 pipeline/build/tests/test_contract_schema.py
 
   swift-lint:
     name: Swift (format + lint)

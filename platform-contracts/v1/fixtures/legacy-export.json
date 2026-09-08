@@ -1,0 +1,21 @@
+{
+  "piruExportVersion": 1,
+  "appVersion": "Piru legacy",
+  "exportedAt": 1700000000000,
+  "sessions": [],
+  "orphanDoses": [{
+    "id": null,
+    "substance": "Melatonin",
+    "amount": 500,
+    "unit": "µg",
+    "route": "sublingual",
+    "timestamp": 1700000000000,
+    "tags": [],
+    "isBackgroundMed": false
+  }],
+  "dailyDoseItems": [],
+  "substanceColors": [],
+  "userColors": [],
+  "favorites": [],
+  "customSubstances": []
+}

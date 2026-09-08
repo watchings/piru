@@ -1,0 +1,53 @@
+{
+  "piruExportVersion": 1,
+  "appVersion": "Piru test",
+  "exportedAt": 1700000000000,
+  "sessions": [{
+    "id": "00000000-0000-4000-8000-000000000001",
+    "startDate": 1700000000000,
+    "title": "Example session",
+    "note": "Private note",
+    "doses": [{
+      "id": "00000000-0000-4000-8000-000000000002",
+      "substance": "Caffeine",
+      "amount": 200,
+      "unit": "mg",
+      "route": "oral",
+      "saltForm": null,
+      "timestamp": 1700000000000,
+      "notes": null,
+      "tags": ["morning"],
+      "isBackgroundMed": false,
+      "latitude": null,
+      "longitude": null
+    }],
+    "notes": [{
+      "id": "00000000-0000-4000-8000-000000000003",
+      "timestamp": 1700000060000,
+      "text": "Observed a change.",
+      "shulgin": null,
+      "mood": 1,
+      "energy": 2,
+      "descriptors": [],
+      "heartRate": 72,
+      "kind": "observation"
+    }]
+  }],
+  "orphanDoses": [],
+  "dailyDoseItems": [],
+  "substanceColors": [],
+  "userColors": [],
+  "favorites": [{ "substance": "Caffeine", "createdAt": 1700000000000 }],
+  "customSubstances": [],
+  "inventory": [{
+    "substance": "Caffeine",
+    "saltForm": null,
+    "unit": "mg",
+    "trackingStart": 1700000000000,
+    "lowStockThreshold": 100,
+    "baselineQuantity": 1000,
+    "doseSize": 200,
+    "createdAt": 1700000000000,
+    "manualEvents": []
+  }]
+}

@@ -26,3 +26,9 @@ form.addEventListener("submit", async event => {
 refreshDoses().catch(() => {
   doses.textContent = "Local journal storage is unavailable in this browser.";
 });
+
+window.addEventListener("piru-journal-changed", () => {
+  refreshDoses().catch(() => {
+    doses.textContent = "Local journal storage is unavailable in this browser.";
+  });
+});

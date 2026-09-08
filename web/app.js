@@ -1,5 +1,5 @@
 import { loadCatalog, searchCatalog } from "./catalog.js";
-import { listDoses } from "./journal-store.js";
+import { listDoses, replaceDoses } from "./journal-store.js";
 
 const status = document.querySelector("#status");
 const results = document.querySelector("#results");
@@ -9,6 +9,30 @@ async function exportEncryptedBackup() {
   if (!passphrase) {
     status.textContent = "Backup cancelled. Your local data was not changed.";
     return;
+  }
+
+  async function importEncryptedBackup(file) {
+    const passphrase = window.prompt("Enter the backup passphrase.");
+    if (!passphrase) return;
+    const envelope = JSON.parse(await file.text());
+    if (envelope.version !== 1 || envelope.algorithm !== "PBKDF2-SHA-256/AES-256-GCM") {
+      throw new Error("Unsupported backup");
+    }
+    const material = await crypto.subtle.importKey(
+      "raw", new TextEncoder().encode(passphrase), "PBKDF2", false, ["deriveKey"]);
+    const key = await crypto.subtle.deriveKey(
+      { name: "PBKDF2", salt: new Uint8Array(envelope.salt), iterations: 250000, hash: "SHA-256" },
+      material, { name: "AES-GCM", length: 256 }, false, ["decrypt"]);
+    const plaintext = await crypto.subtle.decrypt(
+      { name: "AES-GCM", iv: new Uint8Array(envelope.iv) },
+      key, new Uint8Array(envelope.ciphertext));
+    const document = JSON.parse(new TextDecoder().decode(plaintext));
+    if (document.piruExportVersion !== 1 || !Array.isArray(document.orphanDoses)) {
+      throw new Error("Invalid Piru Native export");
+    }
+    await replaceDoses(document.orphanDoses);
+    status.textContent = "Backup imported. The local journal was replaced.";
+    window.dispatchEvent(new Event("piru-journal-changed"));
   }
   const doses = await listDoses();
   const payload = new TextEncoder().encode(JSON.stringify({
@@ -45,6 +69,15 @@ async function exportEncryptedBackup() {
 document.querySelector("#export").addEventListener("click", () => {
   exportEncryptedBackup().catch(() => {
     status.textContent = "Backup export failed. Your local data was not changed.";
+  });
+
+  document.querySelector("#import").addEventListener("change", event => {
+    const [file] = event.target.files;
+    if (!file) return;
+    importEncryptedBackup(file).catch(() => {
+      status.textContent = "Backup import failed. Existing local data was not changed.";
+    });
+    event.target.value = "";
   });
 });
 

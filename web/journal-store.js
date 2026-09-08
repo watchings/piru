@@ -42,3 +42,21 @@ export async function addDose({ substance, amount, unit, route, notes = "" }) {
     request.onerror = () => reject(request.error);
   });
 }
+
+export async function replaceDoses(entries) {
+  if (!Array.isArray(entries) || entries.some(entry =>
+    !entry.id || !entry.substance || !Number.isFinite(entry.amount) ||
+    entry.amount < 0 || !entry.unit || !entry.route || !Number.isFinite(entry.timestamp)
+  )) {
+    throw new Error("Invalid journal export");
+  }
+  const db = await database();
+  return new Promise((resolve, reject) => {
+    const transaction = db.transaction(STORE, "readwrite");
+    const store = transaction.objectStore(STORE);
+    store.clear();
+    entries.forEach(entry => store.add(entry));
+    transaction.oncomplete = resolve;
+    transaction.onerror = () => reject(transaction.error);
+  });
+}

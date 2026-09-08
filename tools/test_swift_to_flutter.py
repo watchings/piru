@@ -20,6 +20,20 @@ class TranslatorTests(unittest.TestCase):
         result = translate_source("if let value = value { print(value) }", "Example.swift")
         self.assertIn("TODO Flutter", result)
 
+    def test_swiftui_views_become_flutter_widgets(self):
+        result = translate_source(
+            'import SwiftUI\nstruct Demo: View {\n  @State private var enabled = false\n'
+            '  var body: some View {\n    VStack {\n      Text("Piru")\n      Button("Log") { }\n      Divider()\n    }\n  }\n}',
+            "Piru/Views/Demo.swift",
+        )
+        self.assertIn("package:flutter/material.dart", result)
+        self.assertIn("class Demo extends StatelessWidget", result)
+        self.assertIn("Widget build(BuildContext context)", result)
+        self.assertIn("Column(children: [", result)
+        self.assertIn('Text("Piru")', result)
+        self.assertIn("TextButton(onPressed", result)
+        self.assertIn("TODO Flutter state/input wiring", result)
+
     def test_translates_a_tree_and_preserves_relative_paths(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory) / "swift"

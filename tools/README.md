@@ -1,9 +1,10 @@
 # Swift → Flutter starting-point translator
 
 `swift_to_flutter.py` performs a dependency-free, project-wide syntax pass. It
-keeps source paths, translates common Swift types and declarations, and emits
-`TODO Flutter` markers for optional binding, SwiftUI, SwiftData, and other
-Apple-specific behavior that must be redesigned rather than guessed.
+keeps source paths, translates common Swift types and declarations, and turns
+SwiftUI views and layout containers into Flutter widget scaffolding. It emits
+`TODO Flutter` markers for optional binding, state wiring, modifiers, SwiftData,
+and other Apple-specific behavior that must be redesigned rather than guessed.
 
 From the repository root:
 

@@ -49,6 +49,10 @@ jobs:
         working-directory: flutter
         run: flutter analyze
 
+      - name: Test converted Dart models and engines
+        working-directory: flutter
+        run: flutter test
+
       - name: Build Flutter web
         working-directory: flutter
         run: flutter build web --release

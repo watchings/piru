@@ -225,7 +225,7 @@
 
 ### 阶段 4：计算与时间线
 
-- [/] Web/Android 已接入基础 PK 剩余比例计算和共享 fixture；三端 PK/PD、active window、session clustering 和图表待完成。
+- [/] Web/Android 已接入基础 PK 剩余比例计算、Android tolerance/PDF 基础和共享 fixture；三端 PK/PD、active window、session clustering 和图表待完成。
 - [/] 已建立 PK 采样点 fixture；峰值、Tmax、零阶清除和时区转换待完成。
 - [ ] 交互结果按类别/规则/证据级别展示，并保留来源文本和“不是医疗建议”边界。
 - [ ] 对极端剂量、空数据、缺失半衰期、跨午夜会话、夏令时和离线状态做测试。

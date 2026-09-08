@@ -156,6 +156,8 @@ jobs:
         run: python3 pipeline/build/tests/test_contract_schema.py
       - name: Cross-platform catalog snapshot
         run: python3 pipeline/build/tests/test_catalog_snapshot.py
+      - name: Cross-platform PK fixture
+        run: python3 pipeline/build/tests/test_pk_fixture.py
 
   swift-lint:
     name: Swift (format + lint)

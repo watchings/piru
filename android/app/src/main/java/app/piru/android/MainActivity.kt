@@ -50,7 +50,10 @@ class MainActivity : ComponentActivity() {
                     }
                     Spacer(Modifier.height(12.dp))
                     entries.value.take(20).forEach { dose ->
-                        Text("${dose.substance} — ${dose.amount} ${dose.unit} (${dose.route})")
+                        val elapsed = ((System.currentTimeMillis() - dose.timestamp) / 60000.0).coerceAtLeast(0.0)
+                        val remaining = (PkModel.remainingFraction(elapsed, 300.0) * 100).toInt()
+                        Text("${dose.substance} — ${dose.amount} ${dose.unit} (${dose.route}), " +
+                            "estimated $remaining% remaining")
                     }
                 }
             }

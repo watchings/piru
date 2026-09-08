@@ -1,4 +1,5 @@
 import { addDose, deleteDose, listDoses } from "./journal-store.js";
+import { remainingFraction } from "./pk.js";
 
 const form = document.querySelector("#dose-form");
 const doses = document.querySelector("#doses");
@@ -6,7 +7,10 @@ const doses = document.querySelector("#doses");
 function renderDoses(entries) {
   doses.replaceChildren(...entries.map(entry => {
     const row = document.createElement("li");
-    row.textContent = `${entry.substance} — ${entry.amount} ${entry.unit} (${entry.route})`;
+    const elapsed = Math.max(0, (Date.now() - entry.timestamp) / 60000);
+    const remaining = Math.round(remainingFraction(elapsed, 300) * 100);
+    row.textContent = `${entry.substance} — ${entry.amount} ${entry.unit} (${entry.route}), ` +
+      `estimated ${remaining}% remaining`;
     const remove = document.createElement("button");
     remove.type = "button";
     remove.textContent = "Delete";

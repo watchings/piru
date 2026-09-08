@@ -1,0 +1,18 @@
+{
+  "dose": {
+    "id": "00000000-0000-4000-8000-000000000010",
+    "substance": "Caffeine",
+    "amount": 200,
+    "unit": "mg",
+    "route": "oral",
+    "timestamp": 1700000000000,
+    "tags": [],
+    "isBackgroundMed": false
+  },
+  "model": {
+    "halfLifeMinutes": 300,
+    "timeToPeakMinutes": 60,
+    "sampleMinutes": [0, 60, 120, 300, 600],
+    "expectedRemainingFraction": [1.0, 0.907, 0.791, 0.522, 0.261]
+  }
+}
